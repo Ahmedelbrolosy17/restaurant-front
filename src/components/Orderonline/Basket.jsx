@@ -30,7 +30,7 @@ export default function Basket({ basket, setBasket }) {
     if (basket.length > 0) {
       try {
         // Send basket data to the backend
-        const response = await fetch('http://localhost:5000/checkout', {
+        const response = await fetch('https://restaurant-server-beta.vercel.app/checkout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
