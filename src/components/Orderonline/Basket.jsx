@@ -29,9 +29,9 @@ export default function Basket({ basket, setBasket }) {
   const handleOrderNow = async () => {
     if (basket.length > 0) {
       try {
-        // Send basket data to the backend
-        const response = await fetch('https://restaurant-server-beta.vercel.app/checkout', {
-          method: 'POST',
+        // Send basket data to the backend 
+        const response = await fetch('https://restaurant-server-rho-three.vercel.app//checkout', {
+        method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
