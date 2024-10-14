@@ -15,7 +15,7 @@ const TemporaryMessage = () => {
   }, [navigate]);
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen p-4">
+    <div className="flex flex-col justify-center items-center bg-gray-100 h-screen p-4">
       <div className="bg-white p-8 rounded-lg shadow-lg text-center w-full max-w-md mt-4">
         {/* Celebration Icon */}
         <FaCheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
@@ -28,6 +28,7 @@ const TemporaryMessage = () => {
       </div>
     </div>
   );
+  
 };
 
 export default TemporaryMessage;

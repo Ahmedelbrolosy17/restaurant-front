@@ -27,27 +27,29 @@ export default function Basket({ basket, setBasket }) {
   };
 
   const handleOrderNow = async () => {
-    if (basket.length > 0) {
-      try {
-        // Send basket data to the backend 
-        const response = await fetch('https://restaurant-server-rho-three.vercel.app/checkout', {
+    try {
+      const response = await fetch('https://restaurant-server-rho-three.vercel.app/checkout', {
         method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ basket }), // Sending basket data
-        });
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ basket: basket }), 
+      });
 
-        // Get the Stripe session URL
-        const { url } = await response.json();
-
-        // Redirect to Stripe Checkout
-        window.location.href = url;
-      } catch (error) {
-        console.error('Error creating checkout session:', error);
+      if (!response.ok) {
+        // If response isn't okay, redirect to /complete
+        navigate('/complete'); // Use history.push('/complete') for React Router v5
+        return;
       }
-    } else {
-      alert('Your basket is empty!');
+
+      const {data} = await response.json();
+
+      // Redirect to the session URL (if fetch is successful)
+      window.location.href = data;
+    } catch (error) {
+      // Handle fetch errors and redirect to /complete
+      console.error('Error during checkout:', error);
+      navigate('/complete'); // Use history.push('/complete') for React Router v5
     }
   };
 
