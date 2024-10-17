@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
-const Contact = () => {
-  // State to handle form data
+const Contact = React.memo(() => {
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -12,25 +12,20 @@ const Contact = () => {
   // State for success message
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Handle form input change
-  const handleChange = (e) => {
+
+  const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: type === 'checkbox' ? checked : value,
-    });
-  };
+    }));
+  }, []);
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    // Add the logic to send the form data (e.g., to an API)
     console.log(formData);
-
-    // Set success message after submission
+  
     setSuccessMessage("Your message has been sent!");
-
-    // Reset form after submission (optional)
     setFormData({
       name: '',
       email: '',
@@ -38,9 +33,8 @@ const Contact = () => {
       agreeToTerms: false,
     });
 
-    // Clear success message after 3 seconds
     setTimeout(() => setSuccessMessage(''), 3000);
-  };
+  }, [formData]);
 
   return (
     <section id="contact" className="bg-gray-200 py-12 md:py-16">
@@ -137,6 +131,7 @@ const Contact = () => {
       </div>
     </section>
   );
-};
+});
 
 export default Contact;
+

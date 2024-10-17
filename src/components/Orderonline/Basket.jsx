@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FaTrashAlt, FaCartPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
-export default function Basket({ basket, setBasket }) {
+const Basket = ({ basket, setBasket }) => {
   const navigate = useNavigate();
 
-  const increaseQuantity = (index) => {
+  const increaseQuantity = useCallback((index) => {
     const updatedBasket = [...basket];
     updatedBasket[index].quantity += 1;
     setBasket(updatedBasket);
-  };
+  }, [basket, setBasket]);
 
-  const decreaseQuantity = (index) => {
+  const decreaseQuantity = useCallback((index) => {
     const updatedBasket = [...basket];
     if (updatedBasket[index].quantity > 1) {
       updatedBasket[index].quantity -= 1;
@@ -19,39 +19,42 @@ export default function Basket({ basket, setBasket }) {
       removeItem(index);
     }
     setBasket(updatedBasket);
-  };
+  }, [basket, setBasket]);
 
-  const removeItem = (index) => {
+  const removeItem = useCallback((index) => {
     const updatedBasket = basket.filter((_, i) => i !== index);
     setBasket(updatedBasket);
-  };
+  }, [basket, setBasket]);
 
-  const handleOrderNow = async () => {
+  const handleOrderNow = useCallback(async () => {
     try {
-      const response = await fetch('https://restaurant-server-rho-three.vercel.app/checkout', {
+      const response = await fetch('http://localhost:5000/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ basket: basket }), 
+        body: JSON.stringify({ basket }), 
       });
 
       if (!response.ok) {
-        // If response isn't okay, redirect to /complete
-        navigate('/complete'); // Use history.push('/complete') for React Router v5
+        navigate('/complete');
         return;
       }
 
-      const {data} = await response.json();
-
-      // Redirect to the session URL (if fetch is successful)
-      window.location.href = data;
+      const { url } = await response.json();
+      window.location.href = url;
     } catch (error) {
-      // Handle fetch errors and redirect to /complete
       console.error('Error during checkout:', error);
-      navigate('/complete'); // Use history.push('/complete') for React Router v5
+      navigate('/complete');
     }
-  };
+  }, [basket, navigate]);
+
+  //we are here Memoizing the total calculation
+  const total = useMemo(() => {
+    return basket.reduce((total, item) => {
+      return total + (item.price * (1 - item.discount)) * item.quantity;
+    }, 0).toFixed(2);
+  }, [basket]);
 
   return (
     <section id="basket" className="mt-12 bg-white rounded-lg shadow-lg p-4 md:p-6">
@@ -95,7 +98,7 @@ export default function Basket({ basket, setBasket }) {
           <div className="mt-6 flex justify-between items-center border-t pt-4">
             <span className="text-xl font-bold">Total:</span>
             <span className="text-xl font-bold text-yellow-500">
-              ${basket.reduce((total, item) => total + (item.price * (1 - item.discount)) * item.quantity, 0).toFixed(2)}
+              ${total}
             </span>
           </div>
 
@@ -109,4 +112,6 @@ export default function Basket({ basket, setBasket }) {
       )}
     </section>
   );
-}
+};
+
+export default React.memo(Basket);

@@ -58,10 +58,10 @@ const Reservation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Validate the form
     if (!validateForm()) return;
-
+    
     // Prepare the data to send
     const reservationData = {
       name: formData.name,
@@ -72,7 +72,7 @@ const Reservation = () => {
       table: formData.table,
       tableType: formData.tableType,
     };
-
+    
     try {
       const response = await mockApiCall(reservationData);
       setIsSubmitted(1); // Change state to show success message
@@ -90,6 +90,7 @@ const Reservation = () => {
     } catch (error) {
       alert(error.message); // Show error message as alert
     }
+    window.scroll(0,0);
   };
 
   const handleMakeAnotherReservation = () => {
@@ -107,7 +108,10 @@ const Reservation = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      {isSubmitted === 1 ? ( // Check if the state is 1 to show success message
+      
+      {isSubmitted === 1 ? (
+         // Check if the state is 1 to show success message
+         <>
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-4 py-5 sm:p-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Reservation Successful!</h2>
@@ -119,6 +123,8 @@ const Reservation = () => {
             </button>
           </div>
         </div>
+        {window.scroll(0, 0)}
+        </>
       ) : (
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
           <div className="px-4 py-5 sm:p-6">

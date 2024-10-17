@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import offer1 from '../assets/vege.jpg';
 import offer2 from '../assets/dish3.jpg';
@@ -7,7 +7,8 @@ import offer3 from '../assets/drinks.jpg';
 const Offers = () => {
   const navigate = useNavigate(); // Initialize useNavigate hook
 
-  const offers = [
+  // Memoizing the offers array
+  const offers = useMemo(() => [
     {
       title: '50% Off on Starters',
       img: offer1,
@@ -23,25 +24,33 @@ const Offers = () => {
       img: offer3,
       description: 'Celebrate with us! Buy one drink and get another one absolutely free. Offer valid for cocktails and soft drinks.',
     },
-  ];
+  ], []);
 
-  const handleOrderNow = () => {
-    navigate('/order'); // Navigate to the order page
-  };
+  // Memoizing navigation handlers
+  const handleOrderNow = useCallback(() => {
+    navigate('/order');
+  }, [navigate]);
 
-  const handleReservation = () => {
-    navigate('/reservation'); // Navigate to the reservation page (change the route as needed)
-  };
+  const handleReservation = useCallback(() => {
+    navigate('/reservation');
+  }, [navigate]);
 
   return (
     <section id="offers" className="bg-yellow-100 py-12 md:py-16">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">Special Offers for the Grand Opening</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12">
+          Special Offers for the Grand Opening
+        </h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
           {offers.map((offer, index) => (
             <div key={index} className="bg-white rounded-lg shadow-md p-4 md:p-6">
-              <img src={offer.img} alt={offer.title} className="w-full h-40 md:h-48 object-cover rounded-md mb-4" />
+              <img
+                src={offer.img}
+                alt={offer.title}
+                className="w-full h-40 md:h-48 object-cover rounded-md mb-4"
+                loading="lazy" // Lazy load images for optimization
+              />
               <h3 className="text-lg md:text-xl font-semibold mb-2">{offer.title}</h3>
               <p className="text-gray-600">{offer.description}</p>
             </div>
@@ -67,7 +76,6 @@ const Offers = () => {
       </div>
     </section>
   );
-  
 };
 
 export default Offers;
